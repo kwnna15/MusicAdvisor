@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="MusicAdvisorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-09-29T16:39:15" hostname="DESKTOP-8ECD8UE" time="14.86">
+  <properties/>
+  <testcase name="start" classname="MusicAdvisorTest" time="14.86"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> exit
+?[1;31m
+Start test 2?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> categories
+Top Lists
+Super Mood
+Party Time
+> exit
+?[1;31m
+Start test 3?[0m
+> categories
+Please, provide access for application.
+> exit
+?[1;31m
+Start test 4?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> featured
+Monday Morning Mood
+http://open.spotify.com/user/spotify/playlist/6ftJBzU2LLQcaKefMi7ee7
+
+Upp och hoppa!
+http://open.spotify.com/user/spotify__sverige/playlist/4uOEx4OUrkoGNZoIlWMUbO
+
+> exit
+?[1;31m
+Start test 5?[0m
+> featured
+Please, provide access for application.
+> exit
+?[1;31m
+Start test 6?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> new
+Runnin'
+[Pharrell Williams]
+https://open.spotify.com/album/5ZX4m5aVSmWQ5iHAPQpT71
+
+Sneakin'
+[Drake2, Drake3]
+https://open.spotify.com/album/0geTzdk2InlqIoB16fW9Nd
+
+> exit
+?[1;31m
+Start test 7?[0m
+> new
+Please, provide access for application.
+> exit
+?[1;31m
+Start test 8?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> playlists Party Time
+Party Time
+playlists:
+{
+    "playlists": {
+        "href": "http://127.0.0.1:56789/v1/browse/categories/party/playlists?offset=0&limit=20",
+        "items": [
+            {
+                "collaborative": false,
+                "external_urls": {
+                    "spotify": "http://open.spotify.com/user/spotifybrazilian/playlist/4k7EZPI3uKMz4aRRrLVfen"
+                },
+                "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4k7EZPI3uKMz4aRRrLVfen",
+                "id": "4k7EZPI3uKMz4aRRrLVfen",
+                "images": [
+                    {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/bf6544c213532e9650088dfef76c8521093d970e",
+                        "width": 300
+                    }
+                ],
+                "name": "Noite Eletronica",
+                "owner": {
+                    "external_urls": {
+                        "spotify": "http://open.spotify.com/user/spotifybrazilian"
+                    },
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian",
+                    "id": "spotifybrazilian",
+                    "type": "user",
+                    "uri": "spotify:user:spotifybrazilian"
+                },
+                "public": null,
+                "snapshot_id": "PULvu1V2Ps8lzCxNXfNZTw4QbhBpaV0ZORc03Mw6oj6kQw9Ks2REwhL5Xcw/74wL",
+                "tracks": {
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4k7EZPI3uKMz4aRRrLVfen/tracks",
+                    "total": 100
+                },
+                "type": "playlist",
+                "uri": "spotify:user:spotifybrazilian:playlist:4k7EZPI3uKMz4aRRrLVfen"
+            },
+            {
+                "collaborative": false,
+                "external_urls": {
+                    "spotify": "http://open.spotify.com/user/spotifybrazilian/playlist/4HZh0C9y80GzHDbHZyX770"
+                },
+                "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4HZh0C9y80GzHDbHZyX770",
+                "id": "4HZh0C9y80GzHDbHZyX770",
+                "images": [
+                    {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/be6c333146674440123073cb32c1c8b851e69023",
+                        "width": 300
+                    }
+                ],
+                "name": "Festa Indie",
+                "owner": {
+                    "external_urls": {
+                        "spotify": "http://open.spotify.com/user/spotifybrazilian"
+                    },
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian",
+                    "id": "spotifybrazilian",
+                    "type": "user",
+                    "uri": "spotify:user:spotifybrazilian"
+                },
+                "public": null,
+                "snapshot_id": "V66hh9k2HnLCdzHvtoXPv+tm0jp3ODM63SZ0oISfGnlHQxwG/scupDbKgIo99Zfz",
+                "tracks": {
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4HZh0C9y80GzHDbHZyX770/tracks",
+                    "total": 74
+                },
+                "type": "playlist",
+                "uri": "spotify:user:spotifybrazilian:playlist:4HZh0C9y80GzHDbHZyX770"
+            }
+        ],
+        "limit": 20,
+        "next": null,
+        "offset": 0,
+        "previous": null,
+        "total": 2
+    }
+}
+200
+Noite Eletronica
+http://open.spotify.com/user/spotifybrazilian/playlist/4k7EZPI3uKMz4aRRrLVfen
+
+Festa Indie
+http://open.spotify.com/user/spotifybrazilian/playlist/4HZh0C9y80GzHDbHZyX770
+
+> exit
+?[1;31m
+Start test 9?[0m
+> playlists Party Time
+Please, provide access for application.
+> exit
+?[1;31m
+Start test 10?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> playlists Top Lists
+Top Lists
+playlists:
+{"error":{"status":404,"message":"Test unpredictable error message"}}
+200
+Specified id doesn't exist
+> exit
+?[1;31m
+Start test 11?[0m
+> auth
+use this link to request the access code:
+http://127.0.0.1:56788/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code
+?[0;34mTester: making requests to redirect uri: http://localhost:8080
+?[0m?[0;34mTester: done request 1: Authorization code not found. Try again.
+?[0m?[0;34mTester: done request 2: Authorization code not found. Try again.
+waiting for code...
+code received
+?[0m?[0;34mTester: done request 3: Got the code. Return back to your program.
+Making http request for access_token...
+Success!
+> playlists Party Time
+Party Time
+playlists:
+{
+    "playlists": {
+        "href": "http://127.0.0.1:56789/v1/browse/categories/party/playlists?offset=0&limit=20",
+        "items": [
+            {
+                "collaborative": false,
+                "external_urls": {
+                    "spotify": "http://open.spotify.com/user/spotifybrazilian/playlist/4k7EZPI3uKMz4aRRrLVfen"
+                },
+                "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4k7EZPI3uKMz4aRRrLVfen",
+                "id": "4k7EZPI3uKMz4aRRrLVfen",
+                "images": [
+                    {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/bf6544c213532e9650088dfef76c8521093d970e",
+                        "width": 300
+                    }
+                ],
+                "name": "Noite Eletronica",
+                "owner": {
+                    "external_urls": {
+                        "spotify": "http://open.spotify.com/user/spotifybrazilian"
+                    },
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian",
+                    "id": "spotifybrazilian",
+                    "type": "user",
+                    "uri": "spotify:user:spotifybrazilian"
+                },
+                "public": null,
+                "snapshot_id": "PULvu1V2Ps8lzCxNXfNZTw4QbhBpaV0ZORc03Mw6oj6kQw9Ks2REwhL5Xcw/74wL",
+                "tracks": {
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4k7EZPI3uKMz4aRRrLVfen/tracks",
+                    "total": 100
+                },
+                "type": "playlist",
+                "uri": "spotify:user:spotifybrazilian:playlist:4k7EZPI3uKMz4aRRrLVfen"
+            },
+            {
+                "collaborative": false,
+                "external_urls": {
+                    "spotify": "http://open.spotify.com/user/spotifybrazilian/playlist/4HZh0C9y80GzHDbHZyX770"
+                },
+                "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4HZh0C9y80GzHDbHZyX770",
+                "id": "4HZh0C9y80GzHDbHZyX770",
+                "images": [
+                    {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/be6c333146674440123073cb32c1c8b851e69023",
+                        "width": 300
+                    }
+                ],
+                "name": "Festa Indie",
+                "owner": {
+                    "external_urls": {
+                        "spotify": "http://open.spotify.com/user/spotifybrazilian"
+                    },
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian",
+                    "id": "spotifybrazilian",
+                    "type": "user",
+                    "uri": "spotify:user:spotifybrazilian"
+                },
+                "public": null,
+                "snapshot_id": "V66hh9k2HnLCdzHvtoXPv+tm0jp3ODM63SZ0oISfGnlHQxwG/scupDbKgIo99Zfz",
+                "tracks": {
+                    "href": "http://127.0.0.1:56789/v1/users/spotifybrazilian/playlists/4HZh0C9y80GzHDbHZyX770/tracks",
+                    "total": 74
+                },
+                "type": "playlist",
+                "uri": "spotify:user:spotifybrazilian:playlist:4HZh0C9y80GzHDbHZyX770"
+            }
+        ],
+        "limit": 20,
+        "next": null,
+        "offset": 0,
+        "previous": null,
+        "total": 2
+    }
+}
+200
+Noite Eletronica
+http://open.spotify.com/user/spotifybrazilian/playlist/4k7EZPI3uKMz4aRRrLVfen
+
+Festa Indie
+http://open.spotify.com/user/spotifybrazilian/playlist/4HZh0C9y80GzHDbHZyX770
+
+> exit
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

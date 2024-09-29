@@ -20,11 +20,13 @@ class SpotifyRemoteService {
     private final String tokenUri;
     private final String authorizeUri;
     private String SpotifyToken;
+    private final String APIServerPath;
 
-    public SpotifyRemoteService(String spotifySite) {
+    public SpotifyRemoteService(String spotifySite, String apiServerPath) {
         tokenUri = spotifySite + "/api/token";
         authorizeUri = spotifySite + "/authorize?client_id="
                        + client_id + "&response_type=code&redirect_uri=" + redirect_uri;
+        APIServerPath = apiServerPath;
     }
 
     void askAuthorization() {
@@ -39,6 +41,7 @@ class SpotifyRemoteService {
                       + "&client_secret=" + client_secret;
 
         HttpClient client = HttpClient.newBuilder().build();
+        System.out.println("Making http request for access_token...");
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .uri(URI.create(tokenUri))
@@ -56,7 +59,7 @@ class SpotifyRemoteService {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + SpotifyToken)
-                .uri(URI.create("https://api.spotify.com/v1/browse/categories"))
+                .uri(URI.create(APIServerPath+"/v1/browse/categories"))
                 .GET()
                 .build();
 
@@ -66,11 +69,29 @@ class SpotifyRemoteService {
         return response.body();
     }
 
+    String getPlaylists(String playlistId) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newBuilder().build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("Authorization", "Bearer " + SpotifyToken)
+                .uri(URI.create(APIServerPath+"/v1/browse/categories/"+playlistId+"/playlists"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("playlists:");
+        System.out.println(response.body());
+        System.out.println(response.statusCode());
+        if (response.statusCode() == 200) {
+            return response.body();
+        }
+        return null;
+    }
+
     String getNewReleases() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + SpotifyToken)
-                .uri(URI.create("https://api.spotify.com/v1/browse/new-releases"))
+                .uri(URI.create(APIServerPath+"/v1/browse/new-releases"))
                 .GET()
                 .build();
 
@@ -82,17 +103,18 @@ class SpotifyRemoteService {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + SpotifyToken)
-                .uri(URI.create("https://api.spotify.com/v1/browse/featured-playlists"))
+                .uri(URI.create(APIServerPath+"/v1/browse/featured-playlists"))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        //System.out.println(response.body());
         return response.body();
     }
 
     public void getAccessToken(String _response) {
         JsonObject jsonObject = JsonParser.parseString(_response).getAsJsonObject();
         SpotifyToken = jsonObject.get("access_token").getAsString();
+        System.out.println("Success!");
     }
 }

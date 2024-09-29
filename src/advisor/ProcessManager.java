@@ -4,10 +4,10 @@ import java.io.IOException;
 
 public class ProcessManager {
 
-    public void start(String SpotifyServerPath) {
+    public void start(String SpotifyServerPath, String apiServerPath) {
         boolean keepProcessing = true;
         boolean authorizedUser = false;
-        RequestProcessor request = new RequestProcessor(authorizedUser, SpotifyServerPath);
+        RequestProcessor request = new RequestProcessor(authorizedUser, SpotifyServerPath, apiServerPath);
         while (keepProcessing) {
             request.getUserRequest();
             try {

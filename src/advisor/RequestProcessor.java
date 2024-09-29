@@ -11,6 +11,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BlockingDeque;
@@ -20,17 +21,25 @@ public class RequestProcessor {
     private String request;
     private boolean authorized = false;
     private final String uriBasePath;
-
+    private final String APIserverPath;
     private final SpotifyRemoteService spotifyRemoteService;
+    private HashMap<String, String> categoryIds;
 
-    RequestProcessor(boolean authorized, String SpotifyServerPath) {
+    RequestProcessor(boolean authorized, String SpotifyServerPath, String apiServerPath) {
         this.authorized = authorized;
         if (SpotifyServerPath.isEmpty()) {
             uriBasePath = "https://accounts.spotify.com";
         } else {
             uriBasePath = SpotifyServerPath;
         }
-        spotifyRemoteService = new SpotifyRemoteService(uriBasePath);
+
+        if (apiServerPath.isEmpty()) {
+            APIserverPath = "https://api.spotify.com";
+        } else {
+            APIserverPath = apiServerPath;
+        }
+        spotifyRemoteService = new SpotifyRemoteService(uriBasePath, APIserverPath);
+        categoryIds = new HashMap<>();
     }
 
     protected boolean getAuthorized() {
@@ -52,6 +61,29 @@ public class RequestProcessor {
         HttpServer server = HttpServer.create();
         BlockingDeque<String> accessCodeQueue = new LinkedBlockingDeque<>();
 
+        if (request.startsWith("playlists")) {
+            String categoryName = request.substring(10);
+            System.out.println(categoryName);
+
+            try {
+                String categoriesOutput = spotifyRemoteService.getCategories();
+                categoryIds = parseCategoryIDsJson(categoriesOutput);
+                if (categoryIds.containsKey(categoryName)) {
+                    String categoryId = categoryIds.get(categoryName);
+                    List<String> featured = parsePlaylistsJson(spotifyRemoteService.getPlaylists(categoryId));
+                    for (String i : featured) {
+                        System.out.println(i);
+                    }
+                } else {
+                    System.out.println("Unknown category name.");
+                }
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
+
         switch (request) {
             case "new":
                 try {
@@ -64,12 +96,6 @@ public class RequestProcessor {
                 }
                 break;
             case "featured":
-                System.out.println("---FEATURED---\n" +
-                                   "Mellow Morning\n" +
-                                   "Wake Up and Smell the Coffee\n" +
-                                   "Monday Motivation\n" +
-                                   "Songs to Sing in the Shower");
-
                 try {
                     List<String> featured = parseFeaturedJson(spotifyRemoteService.getFeatured());
                     for (String i : featured) {
@@ -81,28 +107,24 @@ public class RequestProcessor {
                 break;
             case "categories":
                 try {
-                    List<String> categories = parseCategoriesJson(spotifyRemoteService.getCategories());
+                    String categoriesOutput = spotifyRemoteService.getCategories();
+                    List<String> categories = parseCategoriesJson(categoriesOutput);
                     for (String i : categories) {
                         System.out.println(i);
                     }
+                    categoryIds = parseCategoryIDsJson(categoriesOutput);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 break;
-            case "playlists Mood":
-                System.out.println("---MOOD PLAYLISTS---\n" +
-                                   "Walk Like A Badass  \n" +
-                                   "Rage Beats  \n" +
-                                   "Arab Mood Booster  \n" +
-                                   "Sunday Stroll");
-                break;
+
             case "auth":
 
                 server.bind(new InetSocketAddress(8080), 0);
                 server.createContext("/", new MusicAdvisorHttpServer(spotifyRemoteService, accessCodeQueue));
 
                 server.start();
-
+                System.out.println("use this link to request the access code:");
                 System.out.println(uriBasePath + "/authorize?client_id=c4d2c4750f884f688109440ead8ceda8&redirect_uri=http://localhost:8080&response_type=code");
 
 
@@ -113,17 +135,13 @@ public class RequestProcessor {
                         throw new RuntimeException(e);
                     }
                 }
-
-
                 server.stop(1);
 
-
-                authorized = true;
-                System.out.println("---SUCCESS---");
                 break;
             case "exit":
-                System.out.println("---GOODBYE!---");
                 return false;
+            default:
+                throw new IllegalStateException("Unexpected value: " + request);
         }
         return true;
     }
@@ -146,12 +164,41 @@ public class RequestProcessor {
         return categories;
     }
 
-    private List<String> parseNewReleasesJson(String json){
+    private HashMap<String, String> parseCategoryIDsJson(String json) {
+        JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
+        JsonObject categoriesObj = jo.getAsJsonObject("categories");
+        HashMap<String, String> categoryIds = new HashMap<>();
+        for (JsonElement item : categoriesObj.getAsJsonArray("items")) {
+            categoryIds.put(item.getAsJsonObject().get("name").toString().replaceAll("\"", ""), item.getAsJsonObject().get("id").toString().replaceAll("\"", ""));
+        }
+        return categoryIds;
+    }
+
+    private List<String> parsePlaylistsJson(String json) {
+        if (json == null || JsonParser.parseString(json).getAsJsonObject().has("error")) {
+            List<String> errorResponse = new ArrayList<>();
+            errorResponse.add("Specified id doesn't exist");
+            return errorResponse;
+        }
+
+        JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
+        JsonObject playlistsObj = jo.getAsJsonObject("playlists");
+        List<String> playlists = new ArrayList<>();
+        for (JsonElement item : playlistsObj.getAsJsonArray("items")) {
+            String playlistName = item.getAsJsonObject().get("name").toString();
+            String spotifyUrl = item.getAsJsonObject().get("external_urls").getAsJsonObject().get("spotify").toString();
+
+            playlists.add("%s\n%s\n".formatted(playlistName, spotifyUrl).replaceAll("\"", ""));
+        }
+        return playlists;
+    }
+
+    private List<String> parseNewReleasesJson(String json) {
         JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
         JsonObject albumsObj = jo.getAsJsonObject("albums");
         List<String> newReleases = new ArrayList<>();
         for (JsonElement item : albumsObj.getAsJsonArray("items")) {
-            List<String> artistsNameList= new ArrayList<>();
+            List<String> artistsNameList = new ArrayList<>();
             for (JsonElement artist : item.getAsJsonObject().getAsJsonArray("artists")) {
                 String artistName = artist.getAsJsonObject().get("name").toString();
                 artistsNameList.add(artistName);
@@ -170,11 +217,6 @@ public class RequestProcessor {
         JsonObject playlistsObj = jo.getAsJsonObject("playlists");
         List<String> featured = new ArrayList<>();
         for (JsonElement item : playlistsObj.getAsJsonArray("items")) {
-            /*List<String> artistsNameList= new ArrayList<>();
-            for (JsonElement artist : item.getAsJsonObject().getAsJsonArray("artists")) {
-                String artistName = artist.getAsJsonObject().get("name").toString();
-                artistsNameList.add(artistName);
-            }*/
             String featuredName = item.getAsJsonObject().get("name").toString();
             String spotifyUrl = item.getAsJsonObject().get("external_urls").getAsJsonObject().get("spotify").toString();
 
@@ -197,7 +239,10 @@ public class RequestProcessor {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String query = exchange.getRequestURI().getQuery();
+
+
             if (query != null && query.startsWith("code")) {
+                System.out.println("waiting for code...");
                 String accessCode = exchange.getRequestURI().getQuery().split("code=")[1];
                 accessCodeQueue.add(accessCode);
 
@@ -205,6 +250,7 @@ public class RequestProcessor {
                 exchange.sendResponseHeaders(200, positiveResponse.length());
                 exchange.getResponseBody().write(positiveResponse.getBytes());
                 exchange.getResponseBody().close();
+                System.out.println("code received");
 
                 // POST
                 try {
