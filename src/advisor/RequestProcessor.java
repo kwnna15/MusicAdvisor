@@ -1,6 +1,5 @@
 package advisor;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,13 +19,18 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class RequestProcessor {
     private String request;
     private boolean authorized = false;
+    private final int pageSize;
     private final String uriBasePath;
     private final String APIserverPath;
     private final SpotifyRemoteService spotifyRemoteService;
     private HashMap<String, String> categoryIds;
+    private List<String> entries = new ArrayList<>();
+    private int pageNumber = 0;
+    private int totalPages = 0;
 
-    RequestProcessor(boolean authorized, String SpotifyServerPath, String apiServerPath) {
+    RequestProcessor(boolean authorized, String SpotifyServerPath, String apiServerPath, int pageSize) {
         this.authorized = authorized;
+        this.pageSize = pageSize;
         if (SpotifyServerPath.isEmpty()) {
             uriBasePath = "https://accounts.spotify.com";
         } else {
@@ -71,9 +75,7 @@ public class RequestProcessor {
                 if (categoryIds.containsKey(categoryName)) {
                     String categoryId = categoryIds.get(categoryName);
                     List<String> featured = parsePlaylistsJson(spotifyRemoteService.getPlaylists(categoryId));
-                    for (String i : featured) {
-                        System.out.println(i);
-                    }
+                    initializeAndPrintPaginatedOutput(featured);
                 } else {
                     System.out.println("Unknown category name.");
                 }
@@ -85,12 +87,26 @@ public class RequestProcessor {
         }
 
         switch (request) {
+            case "next":
+                if (pageNumber == totalPages) {
+                    System.out.println("No more pages.");
+                } else {
+                    pageNumber += 1;
+                    printPaginatedOutput();
+                }
+                break;
+            case "prev":
+                if (pageNumber <= 1) {
+                    System.out.println("No more pages.");
+                } else {
+                    pageNumber -= 1;
+                    printPaginatedOutput();
+                }
+                break;
             case "new":
                 try {
                     List<String> newReleases = parseNewReleasesJson(spotifyRemoteService.getNewReleases());
-                    for (String i : newReleases) {
-                        System.out.println(i);
-                    }
+                    initializeAndPrintPaginatedOutput(newReleases);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -98,9 +114,7 @@ public class RequestProcessor {
             case "featured":
                 try {
                     List<String> featured = parseFeaturedJson(spotifyRemoteService.getFeatured());
-                    for (String i : featured) {
-                        System.out.println(i);
-                    }
+                    initializeAndPrintPaginatedOutput(featured);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -109,9 +123,7 @@ public class RequestProcessor {
                 try {
                     String categoriesOutput = spotifyRemoteService.getCategories();
                     List<String> categories = parseCategoriesJson(categoriesOutput);
-                    for (String i : categories) {
-                        System.out.println(i);
-                    }
+                    initializeAndPrintPaginatedOutput(categories);
                     categoryIds = parseCategoryIDsJson(categoriesOutput);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -139,11 +151,28 @@ public class RequestProcessor {
 
                 break;
             case "exit":
-                return false;
+                return true;
             default:
                 throw new IllegalStateException("Unexpected value: " + request);
         }
         return true;
+    }
+
+    private void initializeAndPrintPaginatedOutput(List<String> newEntries) {
+        entries = newEntries;
+        pageNumber = entries.isEmpty() ? 0 : 1;
+        totalPages = entries.size() / pageSize;
+        for (int i = 0; i < pageSize; i++) {
+            System.out.println(entries.get((pageNumber * pageSize - 1) + i));
+        }
+        System.out.println("---PAGE %s OF %s---".formatted(pageNumber, totalPages));
+    }
+
+    private void printPaginatedOutput() {
+        for (int i = 0; i < pageSize; i++) {
+            System.out.println(entries.get(((pageNumber - 1) * pageSize) + i));
+        }
+        System.out.println("---PAGE %s OF %s---".formatted(pageNumber, totalPages));
     }
 
     private boolean isAuthorized() {
